@@ -1,0 +1,9 @@
+123 base = 4 decimal = 27
+101 base = 2 decimal = 5
+FF base = 16 decimal = 255
+123 base = 4 decimal = 27
+101 base = 2 decimal = 5
+FF base = 16 decimal = 255
+123 base = 4 decimal = 27
+101 base = 2 decimal = 5
+FF7 base = 8 decimal = 1087
