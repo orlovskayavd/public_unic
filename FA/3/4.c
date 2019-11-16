@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define BUFF_SIZE 1000
+typedef struct	s_message
+{
+	int		id;
+	char	str[BUFF_SIZE];
+	int		byte;
+}				Message;
+
+
+int main()
+{
+	FILE *f1;
+	Message *array;
+	Message		mess;
+	int id = 0;
+	char c;
+	char *ptr;
+
+	f1 = fopen("4.txt", "w");
+	while ((strcmp(mess.str, "stop")))
+	{
+		printf("Write message:\n");
+		scanf("%s", mess.str);
+		if (!(strcmp(mess.str, "stop")))
+			break ;
+		mess.id = id++;
+		mess.byte = strlen(mess.str);	
+		fprintf(f1, "%d %d %s\n", mess.id, mess.byte, mess.str);
+	}
+	printf("\n");
+	fclose(f1);
+	f1 = fopen("4.txt", "r");
+	array = (Message*)malloc(sizeof(Message) * id);
+	for (int i = 0; i < id; i++)
+	{
+		array[i].id = 0;
+		while (isdigit((c = fgetc(f1))))
+			array[i].id = array[i].id * 10 + c - '0';
+		array[i].byte = 0;
+		while (isdigit((c = fgetc(f1))))
+			array[i].byte = array[i].byte * 10 + c - '0';
+		ptr = array[i].str;
+		while ((c = fgetc(f1)) != '\n')
+			*ptr++ = c;
+		*ptr = 0;
+	}
+	for (int i = 0; i < id; i++)
+		printf("id = %d\nbyte = %d\nmessage = %s\n\n", array[i].id, array[i].byte, array[i].str);
+	fclose(f1);
+}

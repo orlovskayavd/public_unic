@@ -1,0 +1,4 @@
+READ(B, 16);
+WRItE(B, 2);
+A:=A\B;
+WRITE(A, 2);

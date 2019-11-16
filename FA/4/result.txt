@@ -1,0 +1,7 @@
+#define HASH 132
+#define LoL 454
+
+sdfg 454 dfggdfg 132 sdfg sfgs
+sdfgsdfg
+sdfgsdfgsdfg 132
+sdfgsdfg LOL 

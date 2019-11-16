@@ -1,0 +1,8 @@
+rtyuu 5 1 0
+asdg 1 0 1
+asdfa 3 1 1
+fghjfhgj 1 0 1
+rerty 1 0 1
+qwerty 2 0 0
+fghj 3 0 0
+END
