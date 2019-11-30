@@ -42,6 +42,8 @@ char	*Dequeue(s_priority **prior)
 	s_priority *temp;
 
 	temp = *prior;
+	if (!temp)
+		return (NULL);
 	*prior = (*prior)->next;
 	str = temp->data;
 	free(temp);
@@ -125,22 +127,20 @@ int main(int argc, char **argv)
 {
 	FILE *f;
 	s_priority *prior = NULL;
-	char buf[BUF_SIZE];
+	char buf[1000];
 	char *temp = buf; 
 
 	for (int i = 1; i < argc; i++)
 	{
-		if (!(f = fopen(argv[i], "r")))
-			print_error(0, argv[i]);
-		else
-			while ((temp = fgets(temp, BUF_SIZE, f)))
-			{
-				parser(&prior, temp);
-			}
+		f = fopen(argv[i], "r");
+		while ((temp = fgets(buf, 1000, f)))
+		{
+			parser(&prior, temp);
+		}
 		fclose(f);
 	}
 	print_prior(prior);
-	Enqueue(&prior, 1, "asdf");
-	print_prior(prior);
+	// Enqueue(&prior, 1, "asdf");
+	// print_prior(prior);
 	del_all(&prior);
 }

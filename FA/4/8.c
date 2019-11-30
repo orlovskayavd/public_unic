@@ -25,11 +25,19 @@ list	*lst_new(char *def_name, char *value)
 	return (new);
 }
 
+char	*search(list *lst, char *str)
+{
+	while (lst && strcmp(lst->def_name, str))
+		lst = lst->next;
+	if (lst)
+		return(lst->value);
+	return (str);
+}
+
 void	push_front(list **lst, char *value, char *def_name)
 {
 	list *new;
 
-	// printf("p = %p\n", *lst);
 	new = lst_new(def_name, value);
 	new->next = *lst;
 	*lst = new;
@@ -55,17 +63,7 @@ int	hash_sum(char *data)
 		result %= HASHSIZE;
 		data++;
 	}
-	// printf("%d\n", result);
 	return (result);
-}
-
-char	*search(list *lst, char *str)
-{
-	while (lst && strcmp(lst->def_name, str))
-		lst = lst->next;
-	if (lst)
-		return(lst->value);
-	return (str);
 }
 
 void	check(char *str, list *array[HASHSIZE], FILE *f, char symbol, FILE *f_result)

@@ -250,9 +250,9 @@ int main(int argc, char **argv)
 	push_new_tree(tree, &new_tree);
 	printf("\n");
 	print_tree(new_tree, 0);
-	n = 5;
+	n = 25;
 	printf("\n");
-	print_max_long(new_tree, &n);
+	print_max_long(new_tree, &n);//depth
 	printf("%d\n", deep_tree(new_tree));
 	min.len = max.len = strlen(new_tree->data);
 	min.str = max.str = new_tree->data;
@@ -263,7 +263,9 @@ int main(int argc, char **argv)
 	FILE *f1;
 
 	if (!(f1 = fopen("save.txt", "r")))
+	{
 		exit(-1);
+	}
 	tree_l = load_tree(tree_l, f1);
 	print_tree(tree_l, 0);
 	free_all(tree_l);

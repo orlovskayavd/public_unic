@@ -5,40 +5,41 @@
 #include <string.h>
 #include <unistd.h>
 
-typedef unsigned long int UINT32;
 
-typedef struct Tree
+
+
+typedef struct	t_tree
 {
 	char val;
 	int neg;
-	struct Tree *left;
-	struct Tree *right;
+	struct t_tree *left;
+	struct t_tree *right;
 
-}Tree, *PTree;
+}				s_tree;
 
-typedef struct Node
+typedef struct	st_tree
 {
-	PTree tree;
-	struct Node *next;
-}Node, *PNode;
+	s_tree *tree;
+	struct st_tree *next;
+}				stack_tree;
 
-void push(PNode *head, PTree tree)
+void push(stack_tree **head, stack_tree *tree)
 {
-	PNode tmp = malloc(sizeof(PNode));
+	stack_tree *tmp = malloc(sizeof(stack_tree));
 	
 	if (tmp == NULL)
 		exit(11);
 	
 	tmp->next = *head;
-	tmp->tree = (PTree)malloc(sizeof(Tree));
+	tmp->tree = (s_tree*)malloc(sizeof(s_tree));
 	tmp->tree = tree;
 	*head = tmp;
 }
 
-PTree pop(PNode *head)
+stack_tree *pop(stack_tree **head)
 {
-	PNode out;
-	PTree tree;
+	stack_tree *out;
+	s_tree *tree;
 
 	if (*head == NULL)
 		exit(12);
@@ -50,7 +51,7 @@ PTree pop(PNode *head)
 	return tree;
 }
 
-PTree peek(const PNode head)
+s_tree *peek(stack_tree *head)
 {
 	if (head == NULL)
 		exit(12);
@@ -58,18 +59,22 @@ PTree peek(const PNode head)
 	return head->tree;
 }
 
-typedef struct Stack
+typedef struct
 {
 	char data[200];
 	int size;
 } Stack;
 
+int prior(char c);
+s_tree *addtree(char c, int n);
+s_tree *treest(char c, s_tree *right, s_tree *left);
+int fun(int n, int i);
+int calc(int leftop, int rightop, const char oper);
+
 void pushs(Stack *stack, char c)
 {
 	if (stack->size >= 200)
-	{
 		exit(21);
-	}
 
 	stack->data[stack->size] = c;
 	stack->size++;
@@ -78,12 +83,18 @@ void pushs(Stack *stack, char c)
 char pops(Stack *stack)
 {
 	if (stack->size == 0)
-	{
 		exit(22);
-	}
 
 	stack->size--;
 	return stack->data[stack->size];
+}
+
+
+int		calc_tree(int *array, s_tree *tree)
+{
+	if (isalpha(tree->val))
+		return (array[tree->val - 'a']);
+	return (calc(calc_tree(array, tree->left), calc_tree(array, tree->right), tree->val));
 }
 
 char peeks(Stack *stack)
@@ -91,12 +102,10 @@ char peeks(Stack *stack)
 	return stack->data[stack->size - 1];
 }
 
-void treeprint(PTree tree, int n)
+void treeprint(s_tree *tree, int n)
 {
 	if (tree->left)
-	{
 		treeprint(tree->left, n + 1);
-	}
 
 	for (int i = 0; i < n * 3; i++) 
 		printf(" ");
@@ -109,31 +118,24 @@ void treeprint(PTree tree, int n)
 	printf("\n");
 
 	if (tree->right)
-	{
 		treeprint(tree->right, n + 1);
-	}
 }
 
-void treetostack(PTree tree, UINT32 i, char* letters, Stack *stack)
+void treetostack(s_tree *tree, int i, char* letters, Stack *stack)
 {
 	size_t j;
 
 	if (tree->right)
-	{
 		treetostack(tree->right, i, letters, stack);
-	}
 
 	if (tree->left)
-	{
 		treetostack(tree->left, i, letters, stack);
-	}
 
 	if (isalpha(tree->val))
 	{
 		for(j = 0; j < strlen(letters); j++)
 			if(tree->val == letters[j])
 				break;
-		//printf("%c ", (i >> j & 1) + '0');
 		pushs(stack, (i >> j & 1)  + '0');
 	}
 	else
@@ -152,37 +154,43 @@ void printstack(Stack stack, char *arr)
 	*arr = 0;
 }
 
-void reversestr(char *str) 
-{ 
-	int n = strlen(str); 
-	char buf;
+// void reversestr(char *str) 
+// { 
+// 	int n = strlen(str); 
+// 	char buf;
 
-	for (int i = 0; i < n / 2; i++)
+// 	for (int i = 0; i < n / 2; i++)
+// 	{
+// 		buf = str[i];
+// 		str[i] = str[n - i - 1];
+// 		str[n - i - 1] = buf;
+// 	}
+// } 
+
+void	push_array(int *array, int number, int count, char *LETTERS)
+{
+	for (int i = 0; i < count; i++)
 	{
-		buf = str[i];
-		str[i] = str[n - i - 1];
-		str[n - i - 1] = buf;
+		array[tolower(*LETTERS) - 'a'] = (number >> i) & 1;
+		printf("%d", (number >> i) & 1);
+		LETTERS++;
 	}
-} 
-
-int prior(char c);
-PTree addtree(char c, int n);
-PTree treest(char c, PTree right, PTree left);
-int fun(int n, int i);
-int calc(int leftop, int rightop, const char oper);
+	
+}
 
 int main()
 {
 	FILE *fIn;
-	PNode head = NULL;
+	stack_tree *head = NULL;
 	Stack stack;
 	stack.size = 0;
 	size_t count = 0;
 	char c, LETTERS[26] = {0};
+	char array[256] = {0}, *arr = array;
 	int n;
 
 
-	if((fIn = fopen("in10.txt", "r")) == 0)
+	if((fIn = fopen("10.txt", "r")) == 0)
 	{
 		printf("There is a problem with input file!\n");
 		exit(1);
@@ -215,7 +223,7 @@ int main()
 		{
 			while(stack.size != 0 && ((c == ')' && peeks(&stack) != '(') || prior(peeks(&stack)) >= prior(c)))
 			{
-				PTree new = treest(pops(&stack), pop(&head), pop(&head));
+				s_tree *new = treest(pops(&stack), pop(&head), pop(&head));
 				push(&head, new);
 			}
 			if (peeks(&stack) == '(' && c == ')')
@@ -224,39 +232,24 @@ int main()
 				pushs(&stack, c);
 		}
 	}
-
 	while(stack.size != 0)
 	{
-		PTree new = treest(pops(&stack), pop(&head), pop(&head));
+		s_tree *new = treest(pops(&stack), pop(&head), pop(&head));
 		push(&head, new);
 	}
+	
 
+	
 	treeprint(peek(head), 0);
-
-	/*int arr[2];
-
-	for (int i = 1; i <= 2; i++)
+	int change[26];
+	printf("%s\n", LETTERS);
+	for (int i = 0; i < pow(2, count); i++)
 	{
-		arr[i - 1] = fun(2, i);
-		printf("%d\n", fun(2, i));
+		push_array(change, i, count, LETTERS);
+		printf ("%d\n", calc_tree(change, peek(head)));
 	}
-
-	printf("%d\n", calc(arr[0], arr[1], '&'));*/
-	char array[256] = {0}, *arr = array;
-	printf("%lf\n", pow(2, count));
-	for (UINT32 i = 0; i < pow(2, count); i++)
-	{
-		stack.size = 0;
-		arr = array;
-		treetostack(peek(head), i, LETTERS, &stack);
-		printstack(stack, arr);
-		reversestr(array);
-		printf("%s\n", array);
-
-		
-	}
-
-
+	
+	
 	fclose(fIn);
 	return 0;
 }
@@ -286,21 +279,7 @@ int calc(int leftop, int rightop, const char oper)
 	}
 }
 
-int fun(int n, int i)
-{
-	int result = 0;
-	int k = pow(2, n) / pow (2, i);
-	//printf("%d %f\n", k, (pow(2, i) / 2));
 
-	for (int j = 0; j < pow(2, i - 1); j++)
-	{
-		result <<= k;
-		result |= (int)pow(2, k) - 1;
-		result <<= k;
-	}
-
-	return result;
-}
 
 int prior(char c)
 {
@@ -312,9 +291,9 @@ int prior(char c)
 		return 1;
 }
 
-PTree addtree(char c, int n)
+s_tree *addtree(char c, int n)
 {
-	PTree tree = (PTree)malloc(sizeof(Tree));
+	s_tree *tree = (s_tree*)malloc(sizeof(s_tree));
 	tree->val = c;
 	if (!n)
 		tree->neg = 0;
@@ -325,9 +304,9 @@ PTree addtree(char c, int n)
 	return tree;
 }
 
-PTree treest(char c, PTree left, PTree right)
+s_tree *treest(char c, s_tree *left, s_tree *right)
 {
-	PTree tree = (PTree)malloc(sizeof(Tree));
+	s_tree *tree = (s_tree*)malloc(sizeof(s_tree));
 	tree->val = c;
 	tree->neg = 0;
 	tree->left = left;

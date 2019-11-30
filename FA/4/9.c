@@ -91,12 +91,23 @@ void	del_all(s_tree *tree)
 	free(tree->child.node);
 }
 
-int		main()
+int		main(int argc, char **argv)
 {
 	s_tree *tree = NULL;
-
-	push("A (B (E (G, T, R (W, Z)), F (L, M)), C)", &tree);
-	print_tree(tree, 0);
-	del_all(tree);
-	free(tree);
+	FILE *f;
+	char str[100];
+	char *ptr = str; 
+	if (!(f = fopen(argv[1], "r")))
+		exit(-1);
+	while ((ptr = fgets(ptr, 100, f)))
+	{
+		str[strlen(str) - 1] = 0;
+		push(str, &tree);
+		print_tree(tree, 0);
+		printf("\n");
+		del_all(tree);
+		free(tree);
+		tree = NULL;
+	}
+	fclose(f);
 }

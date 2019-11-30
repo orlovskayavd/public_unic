@@ -77,10 +77,20 @@ int action(int a, int b, char c)
 	case '-':
 		return (a - b);
 	case '/':
+	if (!b)
+	{
+		printf("del zero\n");
+		exit(2);
+	}
 		return (a / b);
 	case '*':
 		return (a * b);
 	case '%':
+		if (!b)
+		{
+			printf("del zero\n");
+			exit(2);
+		}
 		return (a % b);
 	default:
 		break;

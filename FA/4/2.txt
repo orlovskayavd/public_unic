@@ -1,6 +1,4 @@
-myvar=15;
+myvar=0;
 bg=25;
-ccc=bg+myvar;
-print ccc;
-bg=ccc*myar;
+bg=bg%myvar;
 print;
